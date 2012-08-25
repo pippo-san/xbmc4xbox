@@ -45,7 +45,7 @@ class CGUIControlFactory
 public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
-  CGUIControl* Create(int parentID, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
+  CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
 
@@ -80,7 +80,7 @@ public:
   static bool GetTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image);
   static bool GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
   static bool GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwAlignment);
-  static bool GetAnimations(const TiXmlNode *control, const FRECT &rect, std::vector<CAnimation> &animation);
+  static bool GetAnimations(const TiXmlNode *control, const CRect &rect, std::vector<CAnimation> &animation);
 
   /*! \brief Create an info label from an XML element
    Processes XML elements of the form
@@ -100,7 +100,7 @@ public:
   static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
   static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
-  static void GetRectFromString(const CStdString &string, FRECT &rect);
+  static void GetRectFromString(const CStdString &string, CRect &rect);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
 private:
   static CStdString GetType(const TiXmlElement *pControlNode);

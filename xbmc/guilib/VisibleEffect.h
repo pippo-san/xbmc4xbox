@@ -27,11 +27,10 @@ enum ANIMATION_STATE { ANIM_STATE_NONE = 0, ANIM_STATE_DELAYED, ANIM_STATE_IN_PR
 
 class TiXmlElement;
 class Tweener;
-struct FRECT;
 class CGUIListItem;
 
 #include "TransformMatrix.h"  // needed for the TransformMatrix member
-#include "Geometry.h"         // for CPoint
+#include "Geometry.h"         // for CPoint, CRect
 
 enum ANIMATION_TYPE
 {
@@ -124,7 +123,7 @@ private:
 class CZoomEffect : public CAnimEffect
 {
 public:
-  CZoomEffect(const TiXmlElement *node, const FRECT &rect);
+  CZoomEffect(const TiXmlElement *node, const CRect &rect);
   virtual ~CZoomEffect() {};
 private:
   virtual void ApplyEffect(float offset, const CPoint &center);
@@ -150,7 +149,7 @@ public:
 
   static CAnimation *CreateFader(float start, float end, unsigned int delay, unsigned int length);
 
-  void Create(const TiXmlElement *node, const FRECT &rect);
+  void Create(const TiXmlElement *node, const CRect &rect);
 
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
@@ -174,7 +173,7 @@ public:
 
 private:
   void Calculate(const CPoint &point);
-  void AddEffect(const CStdString &type, const TiXmlElement *node, const FRECT &rect);
+  void AddEffect(const CStdString &type, const TiXmlElement *node, const CRect &rect);
   void AddEffect(CAnimEffect *effect);
 
   enum ANIM_REPEAT { ANIM_REPEAT_NONE = 0, ANIM_REPEAT_PULSE, ANIM_REPEAT_LOOP };

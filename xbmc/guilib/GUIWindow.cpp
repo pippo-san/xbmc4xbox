@@ -163,7 +163,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
-      FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+      CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
       CAnimation anim;
       anim.Create(pChild, rect);
       m_animations.push_back(anim);
@@ -242,13 +242,13 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   // get control type
   CGUIControlFactory factory;
 
-  FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+  CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
   if (pGroup)
   {
-    rect.left = pGroup->GetXPosition();
-    rect.top = pGroup->GetYPosition();
-    rect.right = rect.left + pGroup->GetWidth();
-    rect.bottom = rect.top + pGroup->GetHeight();
+    rect.x1 = pGroup->GetXPosition();
+    rect.y1 = pGroup->GetYPosition();
+    rect.x2 = rect.x1 + pGroup->GetWidth();
+    rect.y2 = rect.y2 + pGroup->GetHeight();
   }
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)
@@ -804,15 +804,15 @@ void CGUIWindow::SetDefaults()
   m_clearBackground = 0xff000000; // opaque black -> clear
 }
 
-FRECT CGUIWindow::GetScaledBounds() const
+CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
   CPoint pos(GetPosition());
-  FRECT rect = {pos.x, pos.y, pos.x + m_width, pos.y + m_height};
+  CRect rect(pos.x, pos.y, pos.x + m_width, pos.y + m_height);;
   float z = 0;
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
   return rect;
 }
 
