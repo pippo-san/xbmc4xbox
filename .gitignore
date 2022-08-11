@@ -1,0 +1,5 @@
+xbmc.suo
+xbmc.ncb
+**/BUILD
+**/Debug
+**/Release

@@ -1,40 +1,46 @@
 @echo off
-REM subwcrev is included in the tortoise svn client: http://tortoisesvn.net/downloads
+rem subwcrev is included in the tortoise svn client: http://tortoisesvn.net/downloads
 
-REM Current directory including drive
 SET CWD=%~dp0
 
 SET REV_FILE="%CWD%xbmc\xbox\svn_rev.h"
 SET SVN_TEMPLATE="%CWD%xbmc\xbox\svn_rev.tmpl"
+SET SVN_TEMPLATE_GIT="%CWD%xbmc\xbox\svn_rev_git.tmpl"
 
 IF EXIST %REV_FILE% del %REV_FILE%
 
-SET SUBWCREV=""
+SetLocal EnableDelayedExpansion
 
-IF EXIST "%ProgramFiles(x86)%\TortoiseSVN\bin\subwcrev.exe" SET SUBWCREV="%ProgramFiles(x86)%\TortoiseSVN\bin\subwcrev.exe"
-IF EXIST "%ProgramFiles%\TortoiseSVN\bin\subwcrev.exe"      SET SUBWCREV="%ProgramFiles%\TortoiseSVN\bin\subwcrev.exe"
-IF EXIST "%ProgramW6432%\TortoiseSVN\bin\subwcrev.exe" SET SUBWCREV="%ProgramW6432%\TortoiseSVN\bin\subwcrev.exe"
-
-IF NOT EXIST %SUBWCREV% (
-   ECHO subwcrev.exe not found in expected locations, skipping generation
-   GOTO SKIPSUBWCREV
+IF NOT EXIST "%CWD%.git\" (
+  ECHO git repository not found, skipping versioning
+  GOTO SKIPVERSION
 )
 
-%SUBWCREV% %SVN_TEMPLATE% %REV_FILE% -f
+rem get commit hash
+FOR /F %%I IN ('git rev-parse --short HEAD') DO SET "REV=%%I"
 
-REM Generate the SVN revision header if it does not exist
-IF NOT EXIST %REV_FILE% (
-   ECHO Generating SVN revision header from SVN repo
-   %SUBWCREV% "%CWD%." %SVN_TEMPLATE% %REV_FILE% -f
-)
+rem get current date
+SET REV_DATE=%DATE%
 
-:SKIPSUBWCREV
+copy %SVN_TEMPLATE_GIT% %REV_FILE%
 
-REM Copy the default unknown revision header if the generation did not occur
+echo #define SVN_REV   "%REV%" >> %REV_FILE%
+
+echo #define SVN_DATE  "%REV_DATE%" >> %REV_FILE%
+
+echo #endif >> %REV_FILE%
+
+goto :end
+
+:SKIPVERSION
+
+REM Copy the default unknown revision header if it's not a git repository
 IF NOT EXIST %REV_FILE% (
    ECHO using default svn revision unknown header
    copy %CWD%xbmc\xbox\svn_rev.unknown %REV_FILE%
 )
+goto :end
 
+:end
 SET REV_FILE=
 SET SUBWCREV=
