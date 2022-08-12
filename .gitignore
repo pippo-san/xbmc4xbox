@@ -3,3 +3,6 @@ xbmc.ncb
 **/BUILD
 **/Debug
 **/Release
+XBMC4XBOX.zip
+xbelogo/**.xbx
+xbelogo/**.h
