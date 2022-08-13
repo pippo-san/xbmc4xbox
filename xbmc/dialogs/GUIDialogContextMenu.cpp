@@ -197,7 +197,7 @@ int CGUIDialogContextMenu::GetButton()
   return m_clickedButton;
 }
 
-float CGUIDialogContextMenu::GetHeight()
+float CGUIDialogContextMenu::GetHeight() const
 {
   const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
   if (backMain)
@@ -215,7 +215,7 @@ float CGUIDialogContextMenu::GetHeight()
     return CGUIDialog::GetHeight();
 }
 
-float CGUIDialogContextMenu::GetWidth()
+float CGUIDialogContextMenu::GetWidth() const
 {
   CGUIControl *pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)

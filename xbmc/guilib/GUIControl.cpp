@@ -22,7 +22,6 @@
 #include "GUIControl.h"
 
 #include "GUIInfoManager.h"
-#include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 
 using namespace std;
@@ -467,8 +466,11 @@ bool CGUIControl::OnMouseOver(const CPoint &point)
   if (g_Mouse.GetState() != MOUSE_STATE_DRAG)
     g_Mouse.SetState(MOUSE_STATE_FOCUS);
   if (!CanFocus()) return false;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
-  OnMessage(msg);
+  if (!HasFocus())
+  {
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetParentID(), GetID());
+    OnMessage(msg);
+  }
   return true;
 }
 
@@ -698,8 +700,10 @@ void CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
+
   m_transform.Reset();
-  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+
+  CPoint center(GetXPosition() + GetWidth() * 0.5f, GetYPosition() + GetHeight() * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -776,10 +780,13 @@ bool CGUIControl::CanFocusFromPoint(const CPoint &point) const
 
 void CGUIControl::UnfocusFromPoint(const CPoint &point)
 {
-  CPoint controlPoint(point);
-  m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
-  if (!HitTest(controlPoint))
-    SetFocus(false);
+  if (HasFocus())
+  {
+    CPoint controlPoint(point);
+    m_transform.InverseTransformPosition(controlPoint.x, controlPoint.y);
+    if (!HitTest(controlPoint))
+      SetFocus(false);
+  }
 }
 
 bool CGUIControl::HasID(int id) const
@@ -811,7 +818,7 @@ void CGUIControl::SetCamera(const CPoint &camera)
 CPoint CGUIControl::GetRenderPosition() const
 {
   float z = 0;
-  CPoint point(GetXPosition(), GetYPosition());
+  CPoint point(GetPosition());
   m_transform.TransformPosition(point.x, point.y, z);
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();

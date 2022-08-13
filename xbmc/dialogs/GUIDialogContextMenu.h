@@ -161,8 +161,8 @@ public:
 
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
 protected:
-  float GetWidth();
-  float GetHeight();
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
   virtual void OnInitWindow();
   static CStdString GetDefaultShareNameByType(const CStdString &strType);
   static void SetDefault(const CStdString &strType, const CStdString &strDefault);
